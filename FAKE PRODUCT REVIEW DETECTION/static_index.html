@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Review Analyzer</title>
+    <link rel="stylesheet" href="./style3.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+  
+</head>
+<body>
+    <h1>Review Analyzer</h1>
+    
+    <!-- Default reviews section -->
+    <div id="default-reviews">
+        <h2>Amazon Reviews Analysis</h2>
+        <div id="default-overall-stats"></div>
+        <div id="default-reviews-container"></div>
+    </div>
+
+    <hr>
+    
+    <h2>Analyze Custom File</h2>
+    <input type="file" id="fileInput" accept=".txt,.tsv">
+    <div id="overall-stats"></div>
+    <div id="reviews-container"></div>
+
+    <script>
+        // Function to fetch and analyze default reviews
+        async function loadDefaultReviews() {
+            try {
+                const response = await fetch('amazon_reviews.txt');
+                const text = await response.text();
+                
+                Papa.parse(text, {
+                    header: true,
+                    delimiter: '\t',
+                    complete: function(results) {
+                        let totalGenuine = 0;
+                        let totalFake = 0;
+                        const reviewResults = [];
+
+                        results.data.forEach(row => {
+                            if (row.REVIEW_TEXT) {
+                                const analysis = analyzeText(row.REVIEW_TEXT);
+                                totalGenuine += analysis.genuine;
+                                totalFake += analysis.fake;
+                                reviewResults.push({
+                                    doc_id: row.DOC_ID,
+                                    title: row.REVIEW_TITLE,
+                                    genuine: analysis.genuine,
+                                    fake: analysis.fake
+                                });
+                            }
+                        });
+
+                        const avgGenuine = totalGenuine / reviewResults.length;
+                        const avgFake = totalFake / reviewResults.length;
+
+                        // Display default overall stats
+                        document.getElementById('default-overall-stats').innerHTML = `
+                            <h3>Overall Statistics</h3>
+                            <p>Average Genuine Score: ${avgGenuine.toFixed(2)}%</p>
+                            <p>Average Fake Score: ${avgFake.toFixed(2)}%</p>
+                        `;
+
+                        // Display default reviews
+                        document.getElementById('default-reviews-container').innerHTML = reviewResults.map(review => `
+                            <div class="review-item">
+                                <h3>Review ${review.doc_id}</h3>
+                                <p>Title: ${review.title}</p>
+                                <p>Genuine Score: ${review.genuine.toFixed(2)}%</p>
+                                <p>Fake Score: ${review.fake.toFixed(2)}%</p>
+                            </div>
+                        `).join('');
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading default reviews:', error);
+                document.getElementById('default-reviews').innerHTML = '<p>Error loading default reviews</p>';
+            }
+        }
+
+        // Load default reviews when page loads
+        window.onload = loadDefaultReviews;
+
+        function analyzeText(text) {
+            // Simple implementation of authenticity calculation
+            // Note: This is a simplified version and won't match the Python implementation exactly
+            const length = text.length;
+            const hasNumbers = /\d/.test(text);
+            const hasSpecialChars = /[!@#$%^&*(),.?":{}|<>]/.test(text);
+            
+            let genuine = 50 + (length > 100 ? 20 : 0) + (hasNumbers ? -10 : 0) + (hasSpecialChars ? -10 : 0);
+            genuine = Math.min(Math.max(genuine, 0), 100);
+            return {
+                genuine: genuine,
+                fake: 100 - genuine
+            };
+        }
+
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            Papa.parse(file, {
+                header: true,
+                delimiter: '\t',
+                complete: function(results) {
+                    let totalGenuine = 0;
+                    let totalFake = 0;
+                    const reviewResults = [];
+
+                    results.data.forEach(row => {
+                        if (row.REVIEW_TEXT) {
+                            const analysis = analyzeText(row.REVIEW_TEXT);
+                            totalGenuine += analysis.genuine;
+                            totalFake += analysis.fake;
+                            reviewResults.push({
+                                doc_id: row.DOC_ID,
+                                title: row.REVIEW_TITLE,
+                                genuine: analysis.genuine,
+                                fake: analysis.fake
+                            });
+                        }
+                    });
+
+                    const avgGenuine = totalGenuine / reviewResults.length;
+                    const avgFake = totalFake / reviewResults.length;
+
+                    // Display overall stats
+                    document.getElementById('overall-stats').innerHTML = `
+                        <h2>Overall Statistics</h2>
+                        <p>Average Genuine Score: ${avgGenuine.toFixed(2)}%</p>
+                        <p>Average Fake Score: ${avgFake.toFixed(2)}%</p>
+                    `;
+
+                    // Display individual reviews
+                    const container = document.getElementById('reviews-container');
+                    container.innerHTML = reviewResults.map(review => `
+                        <div class="review-item">
+                            <h3>Review ${review.doc_id}</h3>
+                            <p>Title: ${review.title}</p>
+                            <p>Genuine Score: ${review.genuine.toFixed(2)}%</p>
+                            <p>Fake Score: ${review.fake.toFixed(2)}%</p>
+                        </div>
+                    `).join('');
+                }
+            });
+        });
+    </script>
+    <script src="./script2.js"></script>
+</body>
+</html>

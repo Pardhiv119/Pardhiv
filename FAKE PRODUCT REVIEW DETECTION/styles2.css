@@ -1,0 +1,124 @@
+/* General Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f3f4f6;
+    color: #333;
+}
+
+header {
+    background: linear-gradient(135deg, #4CAF50, #2E7D32);
+    color: white;
+    text-align: center;
+    padding: 20px 0;
+    font-size: 24px;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Product Container */
+.product-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    margin: 30px auto;
+    padding: 20px;
+    max-width: 900px;
+    background: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.image-section img {
+    width: 100%;
+    max-width: 400px;
+    border-radius: 10px;
+}
+
+.details-section {
+    padding: 20px;
+    text-align: left;
+}
+
+.details-section h2 {
+    color: #388E3C;
+    margin-bottom: 10px;
+}
+
+.details-section h3 {
+    font-size: 22px;
+    color: #1B5E20;
+}
+
+.discount {
+    text-decoration: line-through;
+    color: #E53935;
+    font-size: 18px;
+}
+
+.offer {
+    color: #FB8C00;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+/* Reviews Section */
+.reviews-section {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.reviews-section h2 {
+    text-align: center;
+    color: #388E3C;
+}
+
+.review {
+    padding: 15px;
+    margin: 15px 0;
+    background: #E8F5E9;
+    border-left: 5px solid #388E3C;
+    border-radius: 5px;
+}
+
+.review h3 {
+    color: #FB8C00;
+}
+
+.review p strong {
+    color: #1B5E20;
+}
+
+/* Button Styles */
+button {
+    background: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: #2E7D32;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .product-container {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .details-section {
+        text-align: center;
+    }
+}
